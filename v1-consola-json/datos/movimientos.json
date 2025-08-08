@@ -1,0 +1,20 @@
+[
+    {
+        "tipo": "ingreso",
+        "cantidad": 2300,
+        "categoria": "sueldo",
+        "fecha": "2025-07-01"
+    },
+    {
+        "tipo": "gasto",
+        "cantidad": 23.5,
+        "categoria": "comidas",
+        "fecha": "2025-07-02"
+    },
+    {
+        "tipo": "gasto",
+        "cantidad": 12.0,
+        "categoria": "juguetes",
+        "fecha": "2025-08-08"
+    }
+]

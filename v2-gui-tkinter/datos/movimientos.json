@@ -1,0 +1,38 @@
+[
+    {
+        "tipo": "gasto",
+        "cantidad": 12.0,
+        "categoria": "Loco",
+        "fecha": "12/03/2025"
+    },
+    {
+        "tipo": "ingreso",
+        "cantidad": 10.0,
+        "categoria": "qwe",
+        "fecha": "12"
+    },
+    {
+        "tipo": "ingreso",
+        "cantidad": 111.0,
+        "categoria": "asdf",
+        "fecha": "ase"
+    },
+    {
+        "tipo": "ingreso",
+        "cantidad": 12.0,
+        "categoria": "lolo",
+        "fecha": "12/08/24"
+    },
+    {
+        "tipo": "ingreso",
+        "cantidad": 15.0,
+        "categoria": "Marco",
+        "fecha": "12/12/12"
+    },
+    {
+        "tipo": "gasto",
+        "cantidad": 18.0,
+        "categoria": "kkkkkk",
+        "fecha": "kkk"
+    }
+]

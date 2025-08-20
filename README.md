@@ -22,9 +22,11 @@ Demostrar una evolución práctica como desarrollador autodidacta, con foco en:
 ## 🧩 Versiones del proyecto
 
 | Versión | Descripción | Enlace |
-|--------|-------------|--------|
+|---------|-------------|--------|
 | `v1-consola-json` | Versión inicial con interfaz por consola y persistencia en JSON | [Ver carpeta](./v1-consola-json) |
-| `v2-gui-tkinter`  | Próxima versión: GUI con `tkinter` (en desarrollo) | _En construcción_ |
+| `v2-gui-tkinter`  | Interfaz gráfica con `tkinter`, tabla de movimientos y resumen de ingresos/gastos | [Ver carpeta](./v2-gui-tkinter) |
+
+📑 Consulta el [CHANGELOG](./CHANGELOG.md) para ver la evolución detallada del proyecto.
 
 ---
 
@@ -32,7 +34,8 @@ Demostrar una evolución práctica como desarrollador autodidacta, con foco en:
 
 - Python 3
 - JSON
-- (Próximamente: tkinter, CSV, pyinstaller…)
+- tkinter
+- (Próximamente: CSV, PyInstaller, etc.)
 
 ---
 
@@ -45,14 +48,18 @@ app-finanzas-personales/
 │ ├── modelos/
 │ └── datos/
 │
-├── v2-gui-tkinter/ ← en blanco hasta que se desarrolle
-└── README.md ← este archivo
+├── v2-gui-tkinter/
+│ ├── app.py
+│ ├── servicios/
+│ └── datos/
+│
+├── README.md ← este archivo
+└── CHANGELOG.md ← historial de cambios
 ```
 
 ---
 
 ## 💻 Sobre el autor
 
-Este proyecto forma parte del portafolio de [@jmunozw](https://github.com/jmunozw).
-
+Este proyecto forma parte del portafolio de [@jmunozw](https://github.com/jmunozw).  
 Desarrollado como parte de mi ruta hacia Dev profesional con ChatGPT como mentor técnico y la guía práctica de MoureDev.

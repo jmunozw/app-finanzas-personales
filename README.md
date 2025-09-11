@@ -25,6 +25,8 @@ Demostrar una evolución práctica como desarrollador autodidacta, con foco en:
 |---------|-------------|--------|
 | `v1-consola-json` | Versión inicial con interfaz por consola y persistencia en JSON | [Ver carpeta](./v1-consola-json) |
 | `v2-gui-tkinter`  | Interfaz gráfica con `tkinter`, tabla de movimientos y resumen de ingresos/gastos | [Ver carpeta](./v2-gui-tkinter) |
+| `v3-avanzada`     | CRUD completo en GUI: añadir, editar, eliminar, persistencia en JSON | [Ver carpeta](./v3-avanzada) |
+
 
 📑 Consulta el [CHANGELOG](./CHANGELOG.md) para ver la evolución detallada del proyecto.
 
@@ -51,6 +53,14 @@ app-finanzas-personales/
 ├── v2-gui-tkinter/
 │ ├── app.py
 │ ├── servicios/
+│ └── datos/
+│
+├── README.md
+└── CHANGELOG.md
+├── v3-avanzada/
+│ ├── app.py
+│ ├── servicios/
+│ ├── modelos/
 │ └── datos/
 │
 ├── README.md ← este archivo

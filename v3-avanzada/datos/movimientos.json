@@ -1,0 +1,26 @@
+[
+    {
+        "tipo": "ingreso",
+        "cantidad": 20.0,
+        "categoria": "Moco",
+        "fecha": "15/01/2025"
+    },
+    {
+        "tipo": "ingreso",
+        "cantidad": 20.0,
+        "categoria": "Comodoro",
+        "fecha": "23/03/2025"
+    },
+    {
+        "tipo": "ingreso",
+        "cantidad": 12.0,
+        "categoria": "Alimentos",
+        "fecha": "12/04/2025"
+    },
+    {
+        "tipo": "gasto",
+        "cantidad": 32.0,
+        "categoria": "Alquiler",
+        "fecha": "12/16/2025"
+    }
+]

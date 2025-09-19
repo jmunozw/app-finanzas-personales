@@ -1,18 +1,22 @@
 # 💰 App de Finanzas Personales – v3 (Funcionalidades avanzadas)
 
-Versión con interfaz gráfica en `tkinter`, que amplía las funcionalidades básicas de la v2.  
-Ahora incluye edición y eliminación de movimientos desde la tabla, manteniendo la persistencia en `JSON`.
+Aplicación de escritorio en **Python + Tkinter** para gestionar ingresos, gastos y balance de manera sencilla.  
+Amplía las versiones anteriores con una interfaz gráfica completa, edición y eliminación de movimientos y sistema de filtros.
 
 ---
 
 ## ✨ Funcionalidades actuales
-- **Añadir movimientos** (tipo, cantidad, categoría, fecha opcional).
+- **Añadir movimientos** (tipo, cantidad, categoría y fecha opcional).
 - **Editar movimientos** en un popup con los datos precargados.
 - **Eliminar movimientos** con confirmación.
+- **Filtros dinámicos**:
+  - Por **categoría** (texto parcial o completo).
+  - Por **mes** (`YYYY-mm`).
+  - Botón de **Quitar filtros** para volver a la vista completa.
 - **Tabla (Treeview)** con scroll para listar movimientos.
-- **Resumen automático** con ingresos, gastos y balance.
+- **Resumen automático** con ingresos, gastos y balance, calculado sobre la vista actual (todos o filtrados).
 - **Persistencia** en `datos/movimientos.json`.
-- **Feedback en la interfaz** para confirmar acciones.
+- **Feedback en la interfaz** para confirmar acciones (guardado, edición, borrado, filtros aplicados).
 
 ---
 
@@ -25,7 +29,6 @@ v3-avanzada/
 │ └── movimiento.py # igual que en v1/v2 (opcional)
 ├── servicios/
 │ ├── persistencia.py # cargar y guardar en JSON
-│ └── validacion.py # (opcional) helpers de validación de fecha
 └── datos/
 └── movimientos.json
 ```
@@ -40,17 +43,18 @@ python app.py
 ---
 
 ## 🔮 Próximos pasos (en desarrollo)
-- **Filtros** por categoría y mes (YYYY-mm).
 - **Exportación a CSV** de los movimientos visibles (todos o filtrados).
-- Decisión: resumen calculado sobre **todos** los datos o sobre la **vista filtrada**
+- **Resaltado visual** en la tabla para distinguir ingresos y gastos.
+- Mejoras de UX en edición (validación en vivo, atajos de teclado).
+- Explorar refactor hacia **MVC** (separar vista, lógica y modelo).
 
 ---
 
 ## 📚 Tecnologías utilizadas
 
-- Python 3
-- Tkinter (GUI)
-- JSON (persistencia)
+- **Python 3**
+- **Tkinter** (GUI)
+- **JSON** (persistencia)
 
 ---
 

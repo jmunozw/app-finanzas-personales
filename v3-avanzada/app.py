@@ -1,11 +1,13 @@
 import tkinter as tk
 from tkinter import messagebox
 from tkinter import ttk
+from datetime import datetime
 
 
 
 from servicios.persistencia import cargar_movimientos
 from servicios.persistencia import guardar_movimientos
+
 
 
 #Cargamos los movimientos existentes
@@ -14,18 +16,24 @@ movimientos = cargar_movimientos()
 #Ventana principal de Finanzas personales
 root = tk.Tk()
 root.title("Finanzas v2")
-root.geometry("520x520")
-root.minsize(480,360)
+root.geometry("540x540")
+root.minsize(480,380)
 
 #Zonas frames
 frmSuperior = tk.Frame(root, bg="#f0f0f0", padx=10,pady=10)
 frmSuperior.pack(fill="x")
+
+frmFiltros = tk.Frame(root, bg="#f0f0f0")
+frmFiltros.pack(fill="x")
 
 frmCentral = tk.Frame(root, bg="#f7f7f7")
 frmCentral.pack(fill="both", expand=True)
 
 frmInferior = tk.Frame(root,bg="#f0f0f0", padx=10, pady=8)
 frmInferior.pack(fill="x")
+
+#Variable global
+indices_vista_actual = None
 
 #Variables de estado
 tipo_var = tk.StringVar(value="ingreso")
@@ -36,7 +44,92 @@ ingresos_var = tk.StringVar(value="0.00")
 gastos_var = tk.StringVar(value="0.00")
 balance_var = tk.StringVar(value="0.00")
 
+filtro_cat_var = tk.StringVar(value="")
+filtro_mes_var = tk.StringVar(value="")
 
+# Filtros - Aplicar filtro
+def aplicar_filtros():
+    # Si no hay filtros, señalamos "vista completa"
+    global indices_vista_actual
+
+    #Validamos entradas de filtros
+    cat = filtro_cat_var.get().strip().lower()
+    mes = filtro_mes_var.get().strip() or None
+
+    # Validación ligera de mes para que se ingrese correctamente
+    if mes and (len(mes) != 7 or mes[4] != "-"):
+        messagebox.showwarning("Formato de mes", "Usa 'YYYY-mm' (ej: 2025-09).")
+        return
+
+    if not cat and not mes:
+        indices_vista_actual = None
+    else:
+        indices_vista_actual = []
+
+        for i, mov in enumerate(movimientos):
+            ok = True
+
+            if cat and cat not in mov.get("categoria","").lower():
+                ok = False
+            
+            if mes:
+                fecha = mov.get("fecha")
+                if not fecha or len(fecha) < 7 or fecha[:7] != mes:
+                    ok = False
+            
+            if ok:
+                indices_vista_actual.append(i)
+
+
+    # Pintamos en una sola llamada
+    refrescar_lista(indices_vista_actual)
+
+    #Total de elementos filtrados, o no.
+    total = len(movimientos) if indices_vista_actual is None else len(indices_vista_actual)
+    feedback_lbl.config(text=f"🔎 Filtro aplicado: {total} resultados")
+
+# Filtros - Quitar filtros
+def quitar_filtros():
+    global indices_vista_actual 
+
+    filtro_cat_var.set("")
+    filtro_mes_var.set("")
+
+    indices_vista_actual = None
+    refrescar_lista(indices_vista_actual)
+    
+    feedback_lbl.config(text="✨ Filtros quitados")
+    filtro_categoria.focus_set()
+
+# Normalizar fecha
+def normalizar_fecha(texto_fecha):
+
+    if not texto_fecha:
+        return None
+    
+    fecha = texto_fecha.strip()
+    
+    #Caso dd/mm/yyyy
+    if "/" in fecha:
+        try:
+            fecha = datetime.strptime(fecha,"%d/%m/%Y")
+            return fecha.strftime("%Y-%m-%d")
+        except ValueError:
+            return None #Fecha no válida
+    
+    # Caso yyyy-mm-dd
+    elif "-" in fecha:
+        try:
+            fecha = datetime.strptime(fecha, "%Y-%m-%d")
+            return fecha.strftime("%Y-%m-%d")  # La devuelve normalizada
+        except ValueError:
+            return None
+    #Si no cuadra con formato
+    else:
+        return None
+
+    
+    
 # Obtener selección del TreeView
 def get_seleccion():
     """Devuelve (index_en_tabla, values_tuple) o None si no hay selección"""
@@ -46,11 +139,11 @@ def get_seleccion():
         return None
     
     item_id = sels[0]
-    idx = tv.index(item_id)
+    idx = int(item_id)
     values = tv.item(item_id, "values")
     return idx, values
 
-#Actualizar estos de botones
+#Actualizar estados de botones
 def actualizar_estado_botones():
 
     sel = get_seleccion()
@@ -66,6 +159,7 @@ def actualizar_estado_botones():
     
 #Eliminar movimiento seleccionado
 def eliminar_seleccionado():
+    global indices_vista_actual
     sel = tv.selection()
     if not sel:
         return
@@ -77,7 +171,7 @@ def eliminar_seleccionado():
     
     # Obtenemos indice actual de la fila seleccionada
     item_id = sel[0]
-    idx = tv.index(item_id)
+    idx = int(item_id)
 
     
 
@@ -88,12 +182,28 @@ def eliminar_seleccionado():
         #Si algo raro pasa con el índice, salimos con aviso
         messagebox.showwarning("Aviso","No se pudo elminar el elemento seleccionado.")
         return
-
+    
+    
+    
     # Persistencia y refrescar UI
     guardar_movimientos(movimientos)
-    refrescar_lista()
+    
+    aplicar_filtros()
+    tv.selection_remove(*tv.selection())
     actualizar_estado_botones()
+
     feedback_lbl.config(text="🗑️ Movimiento eliminado", fg="orange")
+
+# Quitar seleccion
+def quitar_seleccion():
+    tv.selection_remove(*tv.selection())
+    tv.focus("")
+    actualizar_estado_botones()
+
+def on_tree_click_vacio(e):
+    #Si se hace click en una zona sin fila, limpia la selección
+    if tv.identify_row(e.y) == "":
+        quitar_seleccion()
 
 # Eliminar movimiento seleccionado - Atajo teclado Spr/Backspace
 def on_key_delete(event):
@@ -108,7 +218,7 @@ def editar_seleccionado():
     
     #Obtenemos indice actual de la fila seleccionada
     item_id = sel[0]
-    idx = tv.index(item_id)
+    idx = int(item_id)
 
     try:
         actual = movimientos[idx]
@@ -150,7 +260,7 @@ def editar_seleccionado():
 
     #Que la segunda columna se estire
     top.grid_columnconfigure(1,weight=1)
-
+    
     def on_cancelar():
         top.destroy()
         
@@ -162,25 +272,34 @@ def editar_seleccionado():
             messagebox.showerror("Cantidad inválida", "La cantidad debe ser un número (usa punto para decimales).")
             ent_cant.focus_set()
             return
+        
+        # Validación fecha
+        fecha = fecha_local.get().strip()
+        fecha_norm = normalizar_fecha(fecha)
+        if fecha and not fecha_norm:
+            messagebox.showerror("Fecha inválida", "Usa formato dd/mm/yyyy o yyyy-mm-dd.")
+            return
+
 
         # Actualizar en memoria
         movimientos[idx] = {
             "tipo": tipo_local.get().strip(),
             "cantidad": cant,
-            "categoria": categoria_local.get().strip(),
-            "fecha": (fecha_local.get().strip() or None),
+            "categoria": categoria_local.get().strip().lower(),
+            "fecha": (fecha_norm or None),
         }
 
         # Persistir y refrescar UI
         guardar_movimientos(movimientos)
-        refrescar_lista()
+
+        aplicar_filtros()
 
         # Reseleccionar la fila editada (si sigue existiendo)
-        items = tv.get_children()
-        if 0 <= idx < len(items):
-            tv.selection_set(items[idx])
-            tv.focus(items[idx])
-            tv.see(items[idx])
+        iid = str(idx)
+        if tv.exists(iid):
+            tv.selection_set(iid)
+            tv.focus(iid)
+            tv.see(iid)  
 
         feedback_lbl.config(text="✏️ Movimiento actualizado", fg="blue")
         top.destroy()
@@ -201,34 +320,44 @@ def editar_seleccionado():
 
 
 # Refrescar lista
-def refrescar_lista():
-    #Limpiamos filas
-    for item in tv.get_children():
-        tv.delete(item)
-    
-    #Inserta movimientos actuales
-    for mov in movimientos:
+def refrescar_lista(indices = None):
+    #Decide qué mostrar
+    idxs = range(len(movimientos)) if indices is None else indices
+
+    #Limpiamos TreeView
+    tv.delete(*tv.get_children())
+
+    #Repintamos el TreeView según indices(idx)
+    for i in idxs:
+        mov = movimientos[i]
         fecha = mov.get("fecha") or "-"
         tipo = mov.get("tipo","")
-        #Fuerza a float por si viene como string del JSON
+        #Forzamos a float por si viene como string del JSON
         cantidad = f"{float(mov.get('cantidad',0)):.2f}"
         categoria = mov.get("categoria","")
-        tv.insert("","end", values=(fecha, tipo, cantidad, categoria))
+
+        # Usamos iid = str(i) para que Editar/Eliminar siga funcionando con filtros
+        tv.insert("","end",iid=str(i),values=(fecha,tipo,cantidad,categoria))
+        
     
     #Actualizamos el resumen
-    actualizar_resumen()
+    actualizar_resumen(indices)
 
     #Limpiar selección (para evitar botones activos tras refrescar)
-    tv.selection_remove(tv.selection())
+    tv.selection_remove(*tv.selection())
     actualizar_estado_botones()
 
 
 # Actualizar resumen de ingresos, gastos y balance
-def actualizar_resumen():
+def actualizar_resumen(indices = None):
+    #Decide qué mostrar
+    idxs = range(len(movimientos)) if indices is None else indices
+
     tot_ing = 0.0
     tot_gas = 0.0
     
-    for mov in movimientos:
+    for i in idxs:
+        mov = movimientos[i]
         #Validamos que el valor obtenido realmente sea un número, caso contrario se asigna 0.0
         try: 
             cantidad = float(mov.get("cantidad",0))
@@ -252,7 +381,7 @@ def actualizar_resumen():
 def on_add_click():
     tipo = tipo_var.get().strip()
     cant_txt = cantidad_var.get().strip()
-    categoria = categoria_var.get().strip()
+    categoria = categoria_var.get().strip().lower()
     fecha = fecha_var.get().strip() or None # Si esta vacío, None
 
     #Validación básica de cantidad
@@ -262,11 +391,17 @@ def on_add_click():
         messagebox.showerror("Cantidad inválida","La cantidad debe ser un número (usa punto para decimales).")
         return
 
+    #Validación fecha
+    fecha_norm = normalizar_fecha(fecha)
+    if fecha and not fecha_norm:
+        messagebox.showerror("Fecha inválida", "Usa formato dd/mm/yyyy o yyyy-mm-dd.")
+        return
+
     movimiento = {
         "tipo": tipo,
         "cantidad": cantidad,
         "categoria": categoria,
-        "fecha": fecha
+        "fecha": fecha_norm
     }
 
     #Añadimos nuevo movimiento a la lista de movimientos
@@ -280,7 +415,7 @@ def on_add_click():
     feedback_lbl.config(text="✅ Movimiento guardado.", fg="green")
 
     #Refrescamos lista de movimientos en la interfaz
-    refrescar_lista()
+    aplicar_filtros()
 
     #Limpiar campos (menos el tipo)
     cantidad_var.set("")
@@ -317,6 +452,29 @@ btn_add.grid(row=4,column=0,columnspan=2,sticky="ew",padx=4,pady=(8,0))
 #Que la columna 1 se estire al redimensionar
 frmSuperior.grid_columnconfigure(1,weight=1)
 
+# Frame Filtros - Filtros para aplicar al listado de movimientos activo
+
+#Etiquetas
+tk.Label(frmFiltros, text="Categoría", bg="#f0f0f0").grid(row=0,column=0,sticky="w",padx=4,pady=4)
+tk.Label(frmFiltros, text="Mes (YYYY-mm)", bg="#f0f0f0").grid(row=1,column=0,sticky="w",padx=4,pady=4)
+
+#Entradas
+filtro_categoria = tk.Entry(frmFiltros, textvariable=filtro_cat_var)
+filtro_categoria.grid(row=0,column=1,sticky="ew", padx=4,pady=4)
+
+filtro_mes = tk.Entry(frmFiltros, textvariable=filtro_mes_var)
+filtro_mes.grid(row=1,column=1,sticky="ew",padx=4,pady=4)
+
+#Botones
+btn_aplicar_filtro = tk.Button(frmFiltros, text="Aplicar", command=aplicar_filtros)
+btn_aplicar_filtro.grid(row=0,column=2,sticky="ew",padx=4,pady=(8,0))
+
+btn_quitar_filtro = tk.Button(frmFiltros, text="Quitar", command=quitar_filtros)
+btn_quitar_filtro.grid(row=0,column=3,sticky="ew",padx=4,pady=(8,0))
+
+
+frmFiltros.grid_columnconfigure(1,weight=1)
+
 # Frame Central - Listado de movimientos
 
 #Treeview + scrollbar en frmCentral(Usamos grid dentro de este frame)
@@ -332,6 +490,15 @@ tv.bind("<<TreeviewSelect>>", lambda e: actualizar_estado_botones())
 #Añadimos atajos de teclado Eliminar movimiento - Spr/Backspace
 tv.bind("<Delete>", on_key_delete)
 tv.bind("<BackSpace>", on_key_delete)
+
+#Si se hace clic en una zona sin fila, limpia la selección
+tv.bind("<Button-1>", on_tree_click_vacio, add="+")
+
+#Atajos en los Entry de filtros
+filtro_categoria.bind("<Return>", lambda e: aplicar_filtros())
+filtro_mes.bind("<Return>", lambda e: aplicar_filtros())
+filtro_categoria.bind("<Escape>", lambda e: quitar_filtros())
+filtro_mes.bind("<Escape>", lambda e: quitar_filtros())
 
 #Encabezados
 tv.heading("fecha", text="Fecha")
@@ -358,18 +525,12 @@ frmAcciones.grid(row=0,column=2,sticky="n", padx=(6,0))
 
 btn_editar = tk.Button(frmAcciones, text="Editar",state=tk.DISABLED, command=editar_seleccionado)
 btn_eliminar = tk.Button(frmAcciones, text="Eliminar", state=tk.DISABLED, command=eliminar_seleccionado)
-btn_reset_sel = tk.Button(frmAcciones, text="Quitar selección", state=tk.DISABLED)
+btn_reset_sel = tk.Button(frmAcciones, text="Quitar selección", state=tk.DISABLED, command=quitar_seleccion)
 
 btn_editar.pack(fill="x",pady=(0,6))
 btn_eliminar.pack(fill="x",pady=(0,6))
 btn_reset_sel.pack(fill="x")
 
-
-
-#Llamamos a refrescar_lista para cargar el TreeView si hubiese movimientos guardados en el JSON
-refrescar_lista()
-# Llamamos a actualizar_estado_botones para actualizar el estado de los botones de acciones
-actualizar_estado_botones()
 
 # Frame Inferior - Resumen de ingresos, gastos y balance total
 
@@ -393,6 +554,10 @@ feedback_lbl.grid(row=1,column=0,columnspan=6,sticky="w", pady=(6,0))
 
 #Que las columnas respiren un poco si se estira
 frmInferior.grid_columnconfigure(5, weight=1)
+
+# Al iniciar, aplicamos filtros (aunque estén vacios) para centralizar lógia
+aplicar_filtros()
+actualizar_estado_botones()
 
 #UX: foco inicial
 ent_cantidad.focus_set()

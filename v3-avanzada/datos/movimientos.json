@@ -1,26 +1,50 @@
 [
     {
         "tipo": "ingreso",
-        "cantidad": 20.0,
-        "categoria": "Moco",
-        "fecha": "15/01/2025"
-    },
-    {
-        "tipo": "ingreso",
-        "cantidad": 20.0,
-        "categoria": "Comodoro",
-        "fecha": "23/03/2025"
-    },
-    {
-        "tipo": "ingreso",
-        "cantidad": 12.0,
-        "categoria": "Alimentos",
-        "fecha": "12/04/2025"
+        "cantidad": 1000.0,
+        "categoria": "nomina",
+        "fecha": "2025-08-01"
     },
     {
         "tipo": "gasto",
-        "cantidad": 32.0,
-        "categoria": "Alquiler",
-        "fecha": "12/16/2025"
+        "cantidad": 30.0,
+        "categoria": "ocio",
+        "fecha": "2025-08-12"
+    },
+    {
+        "tipo": "ingreso",
+        "cantidad": 1000.0,
+        "categoria": "nomina",
+        "fecha": "2025-09-01"
+    },
+    {
+        "tipo": "gasto",
+        "cantidad": 129.0,
+        "categoria": "alimentos",
+        "fecha": "2025-08-02"
+    },
+    {
+        "tipo": "gasto",
+        "cantidad": 450.0,
+        "categoria": "hipoteca",
+        "fecha": "2025-08-05"
+    },
+    {
+        "tipo": "gasto",
+        "cantidad": 450.0,
+        "categoria": "hipoteca",
+        "fecha": "2025-09-05"
+    },
+    {
+        "tipo": "gasto",
+        "cantidad": 25.0,
+        "categoria": "comidas",
+        "fecha": "2025-08-05"
+    },
+    {
+        "tipo": "gasto",
+        "cantidad": 20.0,
+        "categoria": "ocio",
+        "fecha": "2025-08-05"
     }
 ]

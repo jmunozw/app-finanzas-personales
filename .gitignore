@@ -1,0 +1,16 @@
+# Ignorar carpetas de Python
+__pycache__/
+*.py[cod]
+
+# Archivos temporales
+*.log
+*.tmp
+
+# Entornos virtuales
+venv/
+.env/
+.envrc
+
+# Archivos del sistema
+.DS_Store
+Thumbs.db

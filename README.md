@@ -25,8 +25,7 @@ Demostrar una evolución práctica como desarrollador autodidacta, con foco en:
 |---------|-------------|--------|
 | `v1-consola-json` | Versión inicial con interfaz por consola y persistencia en JSON | [Ver carpeta](./v1-consola-json) |
 | `v2-gui-tkinter`  | Interfaz gráfica con `tkinter`, tabla de movimientos y resumen de ingresos/gastos | [Ver carpeta](./v2-gui-tkinter) |
-| `v3-avanzada`     | CRUD completo en GUI: añadir, editar, eliminar, persistencia en JSON | [Ver carpeta](./v3-avanzada) |
-
+| `v3-avanzada`     | CRUD completo en GUI: añadir, editar, eliminar, persistencia en JSON + filtros dinámicos | [Ver carpeta](./v3-avanzada) |
 
 📑 Consulta el [CHANGELOG](./CHANGELOG.md) para ver la evolución detallada del proyecto.
 
@@ -36,12 +35,13 @@ Demostrar una evolución práctica como desarrollador autodidacta, con foco en:
 
 - Python 3
 - JSON
-- tkinter
+- Tkinter
 - (Próximamente: CSV, PyInstaller, etc.)
 
 ---
 
 ## 📂 Estructura del repositorio
+
 
 ```
 app-finanzas-personales/
@@ -55,17 +55,26 @@ app-finanzas-personales/
 │ ├── servicios/
 │ └── datos/
 │
-├── README.md
-└── CHANGELOG.md
 ├── v3-avanzada/
 │ ├── app.py
 │ ├── servicios/
 │ ├── modelos/
 │ └── datos/
 │
+├── .gitignore # exclusiones de cachés, entornos y archivos temporales
 ├── README.md ← este archivo
 └── CHANGELOG.md ← historial de cambios
 ```
+---
+
+## 🛠 Buenas prácticas aplicadas
+
+- Control de versiones con Git.
+- Uso de un archivo `.gitignore` para excluir:
+  - `__pycache__/`, `*.pyc` y otros binarios de Python.
+  - Entornos virtuales (`venv/`, `.env/`).
+  - Archivos temporales de sistema (`.DS_Store`, `Thumbs.db`).
+- Documentación clara y organizada en cada versión.
 
 ---
 

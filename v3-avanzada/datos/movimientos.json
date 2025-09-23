@@ -46,5 +46,17 @@
         "cantidad": 20.0,
         "categoria": "ocio",
         "fecha": "2025-08-05"
+    },
+    {
+        "tipo": "ingreso",
+        "cantidad": 245.6,
+        "categoria": "ocio",
+        "fecha": "2025-09-23"
+    },
+    {
+        "tipo": "gasto",
+        "cantidad": 125.5,
+        "categoria": "ocio",
+        "fecha": "2025-09-20"
     }
 ]

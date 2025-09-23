@@ -1,5 +1,16 @@
 # 📑 Changelog
 
+## [v3.2.0] - 2025-09-23
+### ✨ Añadido
+- **Exportación a CSV**: los movimientos visibles (todos o filtrados) pueden guardarse en un archivo de texto (`.csv`).
+- Diálogo de "Guardar como..." integrado en la interfaz con soporte de codificación UTF-8.
+
+### 🛠 Cambiado
+- La opción de refresco de lista tras añadir/editar/eliminar ahora reaplica filtros para mantener coherencia.
+- `README.md` principal y de `v3-avanzada` actualizados con la nueva funcionalidad.
+
+---
+
 ## [v3.1.0] - 2025-09-19
 ### ✨ Añadido
 - **Filtros dinámicos** por categoría y mes (`YYYY-mm`).

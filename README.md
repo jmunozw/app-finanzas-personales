@@ -36,7 +36,8 @@ Demostrar una evolución práctica como desarrollador autodidacta, con foco en:
 - Python 3
 - JSON
 - Tkinter
-- (Próximamente: CSV, PyInstaller, etc.)
+- CSV (exportación)
+- (Próximamente: PyInstaller, gráficos con matplotlib, etc.)
 
 ---
 

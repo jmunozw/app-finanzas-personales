@@ -17,6 +17,7 @@ Amplía las versiones anteriores con una interfaz gráfica completa, edición y 
 - **Resumen automático** con ingresos, gastos y balance, calculado sobre la vista actual (todos o filtrados).
 - **Persistencia** en `datos/movimientos.json`.
 - **Feedback en la interfaz** para confirmar acciones (guardado, edición, borrado, filtros aplicados).
+- **Exportación a CSV** de los movimientos visibles (todos o filtrados).
 
 ---
 
@@ -42,11 +43,23 @@ python app.py
 
 ---
 
+## 📤 ¿Cómo exportar a CSV?
+
+- (Opcional) Aplica filtros por **categoría** o **mes (YYYY-mm).**
+- Pulsa **“Exportar CSV”.**
+- Elige la ubicación y nombre del archivo.
+- Abre el CSV en Excel/Google Sheets: verás las columnas fecha, tipo, cantidad, categoria.
+
+- **Nota**: la exportación siempre usa punto como separador decimal y 2 decimales en cantidad.
+
+---
+
 ## 🔮 Próximos pasos (en desarrollo)
-- **Exportación a CSV** de los movimientos visibles (todos o filtrados).
 - **Resaltado visual** en la tabla para distinguir ingresos y gastos.
-- Mejoras de UX en edición (validación en vivo, atajos de teclado).
-- Explorar refactor hacia **MVC** (separar vista, lógica y modelo).
+- **Atajos de teclado** (por ejemplo: exportar, enfocar filtros, quitar filtros).
+- Mejora de UX en edición (validación en vivo).
+- Refactor hacia **MVC** (separar vista, lógica y modelo).
+- (Roadmap general) Empaquetado con **PyInstaller** y features de la versión PRO.
 
 ---
 

@@ -1,6 +1,8 @@
 import tkinter as tk
 from tkinter import messagebox
 from tkinter import ttk
+import csv
+from tkinter import filedialog
 from datetime import datetime
 
 
@@ -46,6 +48,51 @@ balance_var = tk.StringVar(value="0.00")
 
 filtro_cat_var = tk.StringVar(value="")
 filtro_mes_var = tk.StringVar(value="")
+
+# Exportar a CSV 
+def exportar_csv():
+    #Decidimos qué filas exportar (vista completa o filtrada)
+    idx = range(len(movimientos)) if indices_vista_actual is None else indices_vista_actual
+
+    #Abrir dialógo "Guardar como..."
+    ruta = filedialog.asksaveasfilename(
+        title="Guardar archivo como...",
+        defaultextension=".csv", 
+        filetypes=[("CSV","*.csv"),("Todos los archivos","*.*")]
+    )
+    
+    if not ruta:
+        return #Usuario cancelo
+    
+    try:
+        with open(ruta,"w",newline='',encoding="utf-8") as f:
+            w = csv.writer(f)
+            # Encabezados
+            w.writerow(["fecha","tipo","cantidad","categoria"])
+
+            # Filas
+            for i in idx:
+                mov = movimientos[i]
+                fecha = mov.get("fecha") or "-"
+                tipo = mov.get("tipo","")
+                try:
+                    cantidad = float(mov.get("cantidad",0))
+                except (TypeError,ValueError):
+                    cantidad = 0.0
+                categoria = mov.get("categoria","")
+
+                w.writerow([fecha,tipo,f"{cantidad:.2f}",categoria])
+            
+            # Feedback
+            feedback_lbl.config(text="📤 Exportación completada", fg="green")
+            messagebox.showinfo("Exportación a CSV", "Archivo exportado correctamente.")
+    except Exception as e:
+        # Si algo falla, avisa
+        messagebox.showerror("Error al exportar", f"No se pudo exportar el CSV.\n\nDetalle: {e}")
+        feedback_lbl.config(text="❌ Error al exportar", fg="red")
+    
+
+
 
 # Filtros - Aplicar filtro
 def aplicar_filtros():
@@ -487,6 +534,9 @@ tv = ttk.Treeview(frmCentral,columns=("fecha","tipo","cantidad","categoria"), sh
 # Añadimos el vinculo de ejecución al seleccionar un valor del TreeView
 tv.bind("<<TreeviewSelect>>", lambda e: actualizar_estado_botones())
 
+#Atajo para exportar CSV
+root.bind("<Control-e>", lambda e: exportar_csv())
+
 #Añadimos atajos de teclado Eliminar movimiento - Spr/Backspace
 tv.bind("<Delete>", on_key_delete)
 tv.bind("<BackSpace>", on_key_delete)
@@ -526,10 +576,12 @@ frmAcciones.grid(row=0,column=2,sticky="n", padx=(6,0))
 btn_editar = tk.Button(frmAcciones, text="Editar",state=tk.DISABLED, command=editar_seleccionado)
 btn_eliminar = tk.Button(frmAcciones, text="Eliminar", state=tk.DISABLED, command=eliminar_seleccionado)
 btn_reset_sel = tk.Button(frmAcciones, text="Quitar selección", state=tk.DISABLED, command=quitar_seleccion)
+btn_exportar = tk.Button(frmAcciones, text="Exportar CSV", command=exportar_csv)
 
 btn_editar.pack(fill="x",pady=(0,6))
 btn_eliminar.pack(fill="x",pady=(0,6))
-btn_reset_sel.pack(fill="x")
+btn_reset_sel.pack(fill="x", pady=(0,6))
+btn_exportar.pack(fill="x")
 
 
 # Frame Inferior - Resumen de ingresos, gastos y balance total
